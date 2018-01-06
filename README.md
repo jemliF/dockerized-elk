@@ -1,6 +1,4 @@
-# compete
-
-> Dockerized ELK
+# Dockerized ELK
 
 ## Run Setup
 
