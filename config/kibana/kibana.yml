@@ -1,0 +1,5 @@
+server.name: "kibana"
+server.host: "localhost"
+elasticsearch.url: "http://elasticsearch:9200"
+elasticsearch.pingTimeout: 6000
+elasticsearch.requestTimeout: 30000

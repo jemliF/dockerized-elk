@@ -1,0 +1,142 @@
+PUT training-hub-logs/_mapping/nginx
+{
+   "properties": {
+      "@timestamp": {
+         "type": "date",
+         "format": "strict_date_optional_time||epoch_millis"
+      },
+      "@version": {
+         "type": "string",
+         "index": "not_analyzed"
+      },
+      "agent": {
+         "type": "string",
+         "fields": {
+            "raw": {
+               "type": "string",
+               "index": "not_analyzed"
+            }
+         }
+      },
+      "auth": {
+         "type": "string",
+         "fields": {
+            "raw": {
+               "type": "string",
+               "index": "not_analyzed"
+            }
+         }
+      },
+      "bytes": {
+         "type": "long"
+      },
+      "clientip": {
+         "type": "string",
+         "index": "not_analyzed"
+      },
+      "device": {
+         "type": "string",
+         "index": "not_analyzed"
+      },
+      "host": {
+         "type": "string",
+         "index": "not_analyzed"
+      },
+      "httpversion": {
+         "type": "string",
+         "index": "not_analyzed"
+      },
+      "ident": {
+         "type": "string"
+      },
+      "major": {
+         "type": "string",
+         "index": "not_analyzed"
+      },
+      "message": {
+         "type": "string"
+      },
+      "minor": {
+         "type": "string",
+         "index": "not_analyzed"
+      },
+      "name": {
+         "type": "string",
+         "fields": {
+            "raw": {
+               "type": "string",
+               "index": "not_analyzed"
+            }
+         }
+      },
+      "os": {
+         "type": "string",
+         "fields": {
+            "raw": {
+               "type": "string",
+               "index": "not_analyzed"
+            }
+         }
+      },
+      "os_name": {
+         "type": "string",
+         "fields": {
+            "raw": {
+               "type": "string",
+               "index": "not_analyzed"
+            }
+         }
+      },
+      "patch": {
+         "type": "string"
+      },
+      "path": {
+         "type": "string",
+         "fields": {
+            "raw": {
+               "type": "string",
+               "index": "not_analyzed"
+            }
+         }
+      },
+      "referrer": {
+         "type": "string",
+         "fields": {
+            "raw": {
+               "type": "string",
+               "index": "not_analyzed"
+            }
+         }
+      },
+      "request": {
+         "type": "string",
+         "fields": {
+            "raw": {
+               "type": "string",
+               "index": "not_analyzed"
+            }
+         }
+      },
+      "response": {
+         "type": "long"
+      },
+      "type": {
+         "type": "string",
+         "fields": {
+            "raw": {
+               "type": "string",
+               "index": "not_analyzed"
+            }
+         }
+      },
+      "verb": {
+         "type": "string",
+         "fields": {
+            "raw": {
+               "type": "string",
+               "index": "not_analyzed"
+            }
+         }
+      }
+   }
+}

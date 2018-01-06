@@ -1,0 +1,6 @@
+**/node_modules/
+**/bower_components/
+volumes/
+!volumes/logs/GeoLite2-City.mmdb
+.idea
+.vscode

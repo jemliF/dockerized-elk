@@ -1,0 +1,111 @@
+version: '2.1'
+services:
+  nginx:
+    image: nginx
+    mem_limit: 100m
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./config/nginx/:/etc/nginx/conf.d/:ro
+      - ./volumes/logs/:/var/log/nginx/:rw
+    ports:
+      - "80:80"
+    networks:
+      - elk
+  elasticsearch:
+    #mem_limit: 1g
+    image: elasticsearch:5.0.0
+    volumes:
+      - ./config/elasticsearch/master/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ./volumes/elasticsearch:/usr/share/elasticsearch/data:rw
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+    networks:
+          - elk
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+  esclient1:
+    image: elasticsearch:5.0.0
+    environment:
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+    #mem_limit: 512m
+    ports:
+      - "9210:9200"
+    volumes:
+      - ./config/elasticsearch/client1/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ./volumes/esclient1:/usr/share/elasticsearch/data:rw
+    networks:
+      - elk
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+  esclient2:
+    image: elasticsearch:5.0.0
+    environment:
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+    #mem_limit: 512m
+    ports:
+      - "9220:9200"
+    volumes:
+      - ./config/elasticsearch/client2/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ./volumes/esclient2:/usr/share/elasticsearch/data:rw
+    networks:
+      - elk
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+  logstash:
+    #mem_limit: 100m
+    build: ./logstash
+    volumes:
+      - ./config/logstash/:/etc/logstash/conf.d/:ro
+      - ./volumes/logs/:/opt/logs/:ro
+    command: logstash -f /etc/logstash/conf.d/
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    #ports:
+    #  - "5000:5000"
+    #  - "9600:9600"
+    networks:
+          - elk
+  kibana:
+    #mem_limit: 100m
+    image: kibana:5.0.0
+    #volumes:
+    #  - ./config/kibana/:/opt/kibana/config/:ro
+    ports:
+      - "5601:5601"
+    depends_on:
+            elasticsearch:
+              condition: service_healthy
+    networks:
+          - elk
+    healthcheck:
+              test: ["CMD", "curl", "-f", "http://localhost:5601"]
+              interval: 5m
+              timeout: 10s
+              retries: 3
+  ship:
+    image: portainer/portainer
+    #mem_limit: 50m
+    networks:
+      - elk
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+networks:
+  elk:
+    driver: bridge
