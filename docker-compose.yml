@@ -27,7 +27,7 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9200"]
       interval: 1m
-      timeout: 10s
+      timeout: 1m
       retries: 3
   esclient1:
     image: elasticsearch:5.0.0
@@ -44,7 +44,7 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9200"]
       interval: 1m
-      timeout: 10s
+      timeout: 1m
       retries: 3
   esclient2:
     image: elasticsearch:5.0.0
@@ -61,7 +61,7 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9200"]
       interval: 1m
-      timeout: 10s
+      timeout: 1m
       retries: 3
   logstash:
     #mem_limit: 100m
@@ -72,6 +72,10 @@ services:
     command: logstash -f /etc/logstash/conf.d/
     depends_on:
       elasticsearch:
+        condition: service_healthy
+      esclient1:
+        condition: service_healthy
+      esclient2:
         condition: service_healthy
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
@@ -92,11 +96,6 @@ services:
               condition: service_healthy
     networks:
           - elk
-    healthcheck:
-              test: ["CMD", "curl", "-f", "http://localhost:5601"]
-              interval: 5m
-              timeout: 10s
-              retries: 3
   ship:
     image: portainer/portainer
     #mem_limit: 50m
